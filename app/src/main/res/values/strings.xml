@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">nstuStudentApp</string>
+    <string name="title_profile">Профиль</string>
+    <string name="title_shedule">Расписание</string>
+    <string name="title_notifications">Другое</string>
+    <string name="enter_password">Введите пароль</string>
+    <string name="enter_email">Введите почту</string>
+    <string name="forgotten_password">Забыли пароль?</string>
+    <string name="enter_button">Войти</string>
+    <string name="domain">\@stud.nstu.ru</string>
+    <string name="error_login_message">"Ошибка в логине или пароле!"</string>
+    <string name="ok">OK</string>
+
+    <string name="sunday">вс</string>
+    <string name="saturday">сб</string>
+    <string name="friday">пт</string>
+    <string name="thursday">чт</string>
+    <string name="monday">пн</string>
+    <string name="tuesday">вт</string>
+    <string name="wednesday">ср</string>
+    <string name="tokenID">tokenId</string>
+</resources>
