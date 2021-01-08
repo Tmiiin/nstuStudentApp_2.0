@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import com.example.nstustudentapp.Constants
 import com.example.nstustudentapp.R
 import com.example.nstustudentapp.enter.di.LoginPresenterFactory
 import com.example.nstustudentapp.enter.presentation.AuthPresenter
@@ -28,14 +29,13 @@ class LoginFragment : Fragment() {
 
     val TAG = "AuthActivity"
     lateinit var mSettings: SharedPreferences
-    val APP_PREFERENCES = "userData"
 
     private lateinit var build: AlertDialog.Builder
     private lateinit var presenter: AuthPresenter
     private var isShown: Boolean = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mSettings = context?.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)!!
+        mSettings = context?.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)!!
         initPresenter()
         enter_button.setOnClickListener { onLoginButtonClick() }
         forgotten_password.setOnClickListener { onForgottenPassword() }
@@ -100,9 +100,8 @@ class LoginFragment : Fragment() {
         }!!
     }
 
-  /*    //to show bottomnav
-      override fun onDetach() {
-          (activity as MainActivity).showBottomNavigation()
-          super.onDetach()
-      }*/
+    override fun onDestroy() {
+        presenter.onDestroy()
+        super.onDestroy()
+    }
 }
