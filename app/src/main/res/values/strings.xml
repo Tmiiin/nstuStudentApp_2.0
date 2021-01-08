@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">nstuStudentApp</string>
     <string name="title_profile">Профиль</string>
-    <string name="title_shedule">Расписание</string>
+    <string name="title_schedule">Расписание</string>
     <string name="title_notifications">Другое</string>
     <string name="enter_password">Введите пароль</string>
     <string name="enter_email">Введите почту</string>
