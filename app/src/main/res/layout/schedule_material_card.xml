@@ -16,55 +16,54 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="3"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:layout_weight="3">
+            android:padding="16dp">
 
             <!-- Title, secondary and supporting text -->
             <TextView
-                android:id="@+id/lessonName"
+                android:id="@+id/lesson_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceHeadline6"
                 android:textSize="16sp"
-                tools:text="Математическая статистика"
-                android:textAppearance="?attr/textAppearanceHeadline6" />
+                tools:text="Математическая статистика" />
 
             <TextView
-                android:id="@+id/teacherName"
+                android:id="@+id/teacher_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:textSize="14sp"
-                tools:text="Чимитова Е.В."
                 android:textAppearance="?attr/textAppearanceBody2"
-                android:textColor="?android:attr/textColorSecondary" />
-
-
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="14sp"
+                tools:text="Чимитова Е.В." />
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="6">
+            android:layout_weight="6"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/lessonTime"
+                android:id="@+id/lesson_time"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                tools:text="16:00 - 17:00"
                 android:layout_weight="2"
+                android:gravity="center|center_vertical|center_horizontal"
                 android:padding="8dp"
-                android:gravity="center|center_vertical|center_horizontal"/>
+                tools:text="16:00 - 17:00" />
 
             <TextView
-                android:id="@+id/audienceNumber"
+                android:id="@+id/audience_number"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                tools:text="2-3-00004"
                 android:layout_weight="2"
+                android:gravity="center|center_vertical|center_horizontal"
                 android:padding="8dp"
-                android:gravity="center|center_vertical|center_horizontal"/>
+                tools:text="2-3-00004" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -28,20 +28,19 @@
             android:weightSum="7" />
 
         <FrameLayout
-            android:id="@+id/progressBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <ProgressBar
-                android:id="@+id/progress_bar"
+                android:id="@+id/schedule_progress_bar"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center_horizontal"
                 android:paddingTop="16dp" />
 
             <TextView
-                android:id="@+id/text_data_is_empty"
+                android:id="@+id/schedule_text_data_is_empty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -50,7 +49,7 @@
                 android:textSize="16sp" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_lessons"
+                android:id="@+id/schedule_rv_lessons"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="15dp"
