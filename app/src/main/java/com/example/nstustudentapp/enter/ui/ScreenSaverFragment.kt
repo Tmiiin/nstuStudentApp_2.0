@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import com.example.nstustudentapp.Constants
 import com.example.nstustudentapp.R
 import com.example.nstustudentapp.enter.di.GetStudentPresenterFactory
 import com.example.nstustudentapp.enter.presentation.ScreenSaverPresenter
@@ -18,7 +19,6 @@ import java.lang.Exception
 class ScreenSaverFragment : Fragment(), ScreenSaverView {
 
     lateinit var mSettings: SharedPreferences
-    val APP_PREFERENCES = "userData"
     private var presenter: ScreenSaverPresenter? = null
     val TAG = "ScreenSaverView"
 
@@ -57,7 +57,7 @@ class ScreenSaverFragment : Fragment(), ScreenSaverView {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.screen_saver_layout, container, false)
-        mSettings = context?.getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)!!
+        mSettings = context?.getSharedPreferences(Constants.APP_PREFERENCES, MODE_PRIVATE)!!
         initPresenter()
         return view
     }
@@ -66,11 +66,5 @@ class ScreenSaverFragment : Fragment(), ScreenSaverView {
         presenter?.onDestroy()
         super.onDestroy()
     }
-
-  /*  //to hide bottomnav
-    override fun onAttach(context: Context) {
-        (activity as MainActivity).hideBottomNavigation()
-        super.onAttach(context)
-    }*/
 
 }

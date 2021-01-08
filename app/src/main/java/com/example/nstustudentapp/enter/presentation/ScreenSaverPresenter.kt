@@ -2,8 +2,9 @@ package com.example.nstustudentapp.enter.presentation
 
 import android.content.SharedPreferences
 import android.util.Log
+import com.example.nstustudentapp.Constants
 import com.example.nstustudentapp.enter.data.model.AuthServerResponseModel
-import com.example.nstustudentapp.enter.domain.GetStusentUseCase
+import com.example.nstustudentapp.enter.domain.GetStudentUseCase
 import com.example.nstustudentapp.enter.ui.ScreenSaverFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -11,7 +12,7 @@ import io.reactivex.schedulers.Schedulers
 
 class ScreenSaverPresenter(
     private val mSettings: SharedPreferences,
-    private val getStusentUseCase: GetStusentUseCase
+    private val getStudentUseCase: GetStudentUseCase
 ) {
 
     private var view: ScreenSaverFragment? = null
@@ -23,11 +24,11 @@ class ScreenSaverPresenter(
     }
 
     fun tryLogin() {
-        val token = mSettings.getString("tokenID", "nothing")
+        val token = mSettings.getString(Constants.TOKEN, "nothing")
         if (token != "nothing") {
             try {
                 myDisposable = token?.let {
-                    getStusentUseCase(it)
+                    getStudentUseCase(it)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ success -> handleLoginResponse(success) },
