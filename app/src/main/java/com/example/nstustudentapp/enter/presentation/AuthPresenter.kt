@@ -18,7 +18,7 @@ class AuthPresenter(private val loginUseCase: LoginUseCase) {
         this.view = view
     }
 
-    private fun isValid(login: String, password: String): Boolean{
+    private fun isValid(login: String, password: String): Boolean {
         if (login.length > 1 && password.length > 1) return true
         return false
     }
@@ -49,7 +49,6 @@ class AuthPresenter(private val loginUseCase: LoginUseCase) {
         view?.setToken(msg.tokenId)
         view?.goToScheduleFragment()
     }
-
 
     fun onDestroy() {
         this.myDisposable?.dispose()

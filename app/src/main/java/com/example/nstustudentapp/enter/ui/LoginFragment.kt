@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.example.nstustudentapp.R
 import com.example.nstustudentapp.enter.di.LoginPresenterFactory
 import com.example.nstustudentapp.enter.presentation.AuthPresenter
@@ -23,7 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class LoginFragment: Fragment() {
+class LoginFragment : Fragment() {
 
     val TAG = "AuthActivity"
     lateinit var mSettings: SharedPreferences
@@ -46,7 +47,7 @@ class LoginFragment: Fragment() {
         presenter.attachView(this)
     }
 
-    fun setToken(token: String){
+    fun setToken(token: String) {
         mSettings.edit().putString("tokenID", token).apply()
     }
 
@@ -82,6 +83,8 @@ class LoginFragment: Fragment() {
 
     fun goToScheduleFragment() {
         Log.d(TAG, "go to new activity")
+        Navigation.findNavController(requireView())
+            .navigate(LoginFragmentDirections.actionLoginFragmentToScheduleFragment())
     }
 
 
@@ -96,4 +99,10 @@ class LoginFragment: Fragment() {
                 .setCancelable(false)
         }!!
     }
+
+  /*    //to show bottomnav
+      override fun onDetach() {
+          (activity as MainActivity).showBottomNavigation()
+          super.onDetach()
+      }*/
 }
