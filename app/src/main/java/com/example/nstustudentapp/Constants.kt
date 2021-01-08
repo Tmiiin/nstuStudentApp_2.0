@@ -10,6 +10,7 @@ class Constants {
         const val URLForAuthentification = "https://login.nstu.ru/ssoservice/json/"
         const val URLforGetSchedule = "http://mobile-backend.cloud.nstu.ru/api/v0.1/semester_schedule"
         const val URLforGetStudent = "http://mobile-backend.cloud.nstu.ru:80/api/v0.1/"
-
+        const val APP_PREFERENCES = "userData"
+        const val TOKEN = "tokenID"
     }
 }
