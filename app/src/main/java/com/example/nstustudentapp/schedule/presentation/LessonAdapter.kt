@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nstustudentapp.R
 import com.example.nstustudentapp.schedule.data.model.Lesson
+import java.lang.StringBuilder
 
 class LessonAdapter(
     private var items: List<Lesson>,
@@ -55,18 +56,21 @@ class LessonAdapter(
         var lessonTime: TextView = view.findViewById(R.id.lesson_time)
 
         fun bind(lesson: Lesson) {
-            disciplineName.text = lesson.disciplineName
-            teacherName.text = lesson.firstTeacherName
-            val lessonTime: String = lesson.startTime + "-" + lesson.endTime;
-            this.lessonTime.text = lessonTime
-            lectureHall.text = lesson.lectureHall
-            if (lesson.nlt != 1) { //if it is lection
+            disciplineName.text = lesson.lessonName
+            val teachers: StringBuilder = StringBuilder()
+            for(teacher in lesson.teacherInfo){
+                teachers.append(teacher.teacherName).append(" ")
+            }
+            teacherName.text = teachers
+            this.lessonTime.text = lesson.time
+            lectureHall.text = lesson.auditory
+          /*  if (lesson.nlt != 1) { //if it is lection
                 // typeOfLesson.text = "лекция"
                 lectureHall.setBackgroundColor(Color.parseColor("#9f3b35"))
             } else {
                 // typeOfLesson.text = "семинар"
                 lectureHall.setBackgroundColor(Color.parseColor("#015f47"))
-            }
+            }*/
         }
 
         override fun onClick(p0: View?) {

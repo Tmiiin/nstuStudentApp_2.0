@@ -7,23 +7,28 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.nstustudentapp.Constants
 import com.example.nstustudentapp.R
 import com.example.nstustudentapp.enter.ui.MainActivity
 import com.example.nstustudentapp.schedule.data.model.Lesson
+import com.example.nstustudentapp.schedule.data.model.LessonsOnDay
 import com.example.nstustudentapp.schedule.di.SchedulePresenterFactory
 import com.example.nstustudentapp.schedule.presentation.LessonAdapter
 import com.example.nstustudentapp.schedule.presentation.SchedulePresenter
 import kotlinx.android.synthetic.main.schedule_layout.*
+import java.lang.Exception
 
 class ScheduleFragment : Fragment(), LessonAdapter.OnLessonListener {
 
 
     lateinit var mSettings: SharedPreferences
-    private var listOfLessons: MutableList<Lesson> =
-        arrayListOf() //list of each lesson-views in schedule
-    private var presenter: SchedulePresenter? = null
+    private var mapOfLessons: MutableMap<String, List<Lesson>> =
+        hashMapOf()
+    private val listOfLessons: MutableList<Lesson> = arrayListOf()
+    private lateinit var presenter: SchedulePresenter
     lateinit var lessonAdapter: LessonAdapter
     val TAG = "ScreenSaverView"
 
@@ -33,7 +38,9 @@ class ScheduleFragment : Fragment(), LessonAdapter.OnLessonListener {
         lessonAdapter = context?.let { LessonAdapter(listOfLessons, this, it) }!!
         schedule_rv_lessons.adapter = lessonAdapter
         schedule_rv_lessons.layoutManager = LinearLayoutManager(context)
-        // presenter?.getLoanList()
+        mSettings = context?.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)!!
+        initPresenter()
+        presenter.getSchedule("%D0%9F%D0%9C-71")
         schedule_rv_lessons.adapter = lessonAdapter
     }
 
@@ -43,9 +50,20 @@ class ScheduleFragment : Fragment(), LessonAdapter.OnLessonListener {
         lessonAdapter.notifyDataSetChanged()
     }
 
+    fun setMapOfLessons(map: ArrayList<LessonsOnDay>){
+        for(item in map) {
+            this.mapOfLessons[item.day] = item.lessons
+        }
+        setListOfLesson(mapOfLessons["пн"]!!)
+        hideProgressBar()
+    }
     private fun initPresenter() {
-           presenter = SchedulePresenterFactory.create(mSettings)
-           presenter?.attachView(this)
+        try {
+            presenter = SchedulePresenterFactory.create(mSettings)
+            presenter.attachView(this)
+        } catch (e: Exception) {
+            Log.e(TAG, e.message.toString())
+        }
     }
 
     override fun onCreateView(
@@ -64,6 +82,11 @@ class ScheduleFragment : Fragment(), LessonAdapter.OnLessonListener {
         (activity as MainActivity).showBottomNavigation()
         super.onAttach(context)
     }
+
+    fun showError(error: String){
+        Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+    }
+
 
     private fun showProgressBar() {
         schedule_rv_lessons.visibility = View.INVISIBLE

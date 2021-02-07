@@ -13,12 +13,12 @@ class IRetrofitSchedule {
         .setLenient()
         .create()
 
-    private var retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(Constants.URLforGetSchedule)
-        .addConverterFactory(ScalarsConverterFactory.create())
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-        .build()
+        private var retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.URLforGetSchedule)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .build()
 
     private var service: ScheduleAPI = retrofit.create(ScheduleAPI::class.java)
 
