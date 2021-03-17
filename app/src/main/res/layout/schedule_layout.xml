@@ -19,12 +19,12 @@
             android:padding="16dp"
             android:text="Расписание занятий"
             android:textSize="24sp" />
-
         <com.example.nstustudentapp.schedule.ui.DaysListView
+            android:id="@+id/day_list_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content">
 
+        </com.example.nstustudentapp.schedule.ui.DaysListView>
         <com.example.nstustudentapp.schedule.ui.RecyclerScheduleView
             android:id="@+id/recycler_custom_view"
             android:layout_width="match_parent"

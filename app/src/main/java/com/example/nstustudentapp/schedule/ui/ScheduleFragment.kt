@@ -12,10 +12,12 @@ import androidx.fragment.app.Fragment
 import com.example.nstustudentapp.Constants
 import com.example.nstustudentapp.R
 import com.example.nstustudentapp.enter.ui.MainActivity
+import com.example.nstustudentapp.schedule.data.model.Days
 import com.example.nstustudentapp.schedule.data.model.Lesson
 import com.example.nstustudentapp.schedule.data.model.LessonsOnDay
 import com.example.nstustudentapp.schedule.di.SchedulePresenterFactory
 import com.example.nstustudentapp.schedule.presentation.SchedulePresenter
+
 import kotlinx.android.synthetic.main.schedule_layout.*
 import java.lang.Exception
 
@@ -31,6 +33,10 @@ class ScheduleFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
         mSettings = context?.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)!!
         initPresenter()
+        day_list_view.observableDay.observe(viewLifecycleOwner, {
+            Log.i(TAG, "Selected day $it, value is ${Days.values()[it].day}")
+            recycler_custom_view.setListOfLesson(mapOfLessons.get(Days.values()[it].day)!!)
+            })
         presenter.getSchedule("%D0%9F%D0%9C-71")
     }
 
@@ -39,7 +45,6 @@ class ScheduleFragment : Fragment(){
             this.mapOfLessons[item.day] = item.lessons
         }
         recycler_custom_view.setListOfLesson(mapOfLessons["пн"]!!)
-      //  recyclerStateView.hideProgressBar()
     }
 
     private fun initPresenter() {
@@ -59,7 +64,7 @@ class ScheduleFragment : Fragment(){
     }
 
     override fun onDestroy() {
-        presenter?.onDestroy()
+        presenter.onDestroy()
         super.onDestroy()
     }
 

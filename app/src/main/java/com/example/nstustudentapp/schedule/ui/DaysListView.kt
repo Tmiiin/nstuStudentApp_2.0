@@ -1,13 +1,12 @@
 package com.example.nstustudentapp.schedule.ui
 
 import android.content.Context
-import android.os.Build
 import android.util.AttributeSet
 import android.view.Gravity
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.annotation.RequiresApi
+import androidx.lifecycle.MutableLiveData
 import com.example.nstustudentapp.R
 import com.example.nstustudentapp.schedule.data.model.Days
 import java.time.LocalDate
@@ -15,22 +14,18 @@ import java.time.temporal.TemporalField
 import java.time.temporal.WeekFields
 import java.util.*
 
-@RequiresApi(Build.VERSION_CODES.O)
 class DaysListView : LinearLayout {
 
-    val listOfDays: MutableList<LinearLayout> = mutableListOf()
-    var selectedDay: Int = 0
-    val cardImageSize :Int = 40
+    private val listOfDays: MutableList<LinearLayout> = mutableListOf()
+    private var selectedDay: Int = 0
+    private val cardImageSize :Int = 40
+    val observableDay: MutableLiveData<Int> = MutableLiveData()
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         init(context)
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init(context)
     }
 
@@ -38,11 +33,13 @@ class DaysListView : LinearLayout {
         init(context)
     }
 
-    private fun setOnClickListeners(){
-        for(item in listOfDays)
-            item.setOnClickListener{ it ->
+    private fun setOnClickListeners() {
+        listOfDays.forEachIndexed { index, item ->
+            item.setOnClickListener {
                 setImage(it.tag.toString().toInt())
+                observableDay.postValue(index)
             }
+        }
     }
 
     private fun init(context: Context) {
@@ -67,7 +64,7 @@ class DaysListView : LinearLayout {
             val dayCard = initDayCard(day.day, dateOf.dayOfMonth.toString(), i.toInt() - 1)
             listOfDays.add(dayCard)
             daysContainer.addView(dayCard)
-            i += 1
+            i++
         }
 
         val params = LayoutParams(64, 64)

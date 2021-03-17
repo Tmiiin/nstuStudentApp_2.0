@@ -3,15 +3,15 @@ package com.example.nstustudentapp.schedule.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.nstustudentapp.R
 import com.example.nstustudentapp.schedule.data.model.Lesson
 import com.example.nstustudentapp.schedule.presentation.LessonAdapter
 import kotlinx.android.synthetic.main.custom_schedule_view.view.*
 
-class RecyclerScheduleView : LinearLayout, LessonAdapter.OnLessonListener {
+class RecyclerScheduleView : ConstraintLayout {
 
     private val listOfLessons: MutableList<Lesson> = arrayListOf()
     lateinit var lessonAdapter: LessonAdapter
@@ -20,15 +20,15 @@ class RecyclerScheduleView : LinearLayout, LessonAdapter.OnLessonListener {
         init(context)
     }
 
-    override fun onLessonClick(v: View?, position: Int) {
-        TODO("Not yet implemented")
+    private fun onLessonClick(lesson: Lesson) {
+        Toast.makeText(context, lesson.toString(), Toast.LENGTH_LONG).show()
     }
 
     private fun init(context: Context) {
         View.inflate(context, R.layout.custom_schedule_view, this)
-        this.orientation = VERTICAL
         schedule_rv_lessons.layoutManager = LinearLayoutManager(context)
-        lessonAdapter = LessonAdapter(listOfLessons, this, context)
+        lessonAdapter = LessonAdapter { onLessonClick(it)}
+        lessonAdapter.data = listOfLessons
         schedule_rv_lessons.adapter = lessonAdapter
         showProgressBar()
     }
@@ -62,8 +62,11 @@ class RecyclerScheduleView : LinearLayout, LessonAdapter.OnLessonListener {
         schedule_progress_bar.visibility = View.GONE
         if (listOfLessons.size == 0)
             schedule_text_data_is_empty.visibility = View.VISIBLE
-        else schedule_rv_lessons.visibility = View.VISIBLE
-    }
+        else {
+            schedule_text_data_is_empty.visibility = View.GONE
+            schedule_rv_lessons.visibility = View.VISIBLE
+        }
 
+    }
 
 }
