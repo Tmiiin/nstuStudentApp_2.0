@@ -1,6 +1,7 @@
 package com.example.nstustudentapp.schedule.ui
 
 import android.content.Context
+import android.graphics.ColorFilter
 import android.util.AttributeSet
 import android.util.Log
 import android.view.Gravity
@@ -11,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nstustudentapp.R
@@ -60,9 +62,7 @@ class DaysListView : LinearLayout {
             item.setOnClickListener {
                 val selectedDay = it.tag.toString().toInt()
                 setImage(selectedDay)
-                Log.i(TAG, "Selected day $it, value is ${Days.values()[selectedDay].day}")
                 val day = Days.values()[selectedDay].day
-                Log.i(TAG, "List is: ${mapOfLessons[day]}")
                 if(mapOfLessons[day].isNullOrEmpty())
                     setListOfLesson(listOf())
                 else setListOfLesson(mapOfLessons[day]!!)
@@ -109,14 +109,29 @@ class DaysListView : LinearLayout {
         leftButton.setImageResource(R.drawable.ic_arrow_point_to_right)
         leftButton.rotation = 180F
         leftButton.layoutParams = params
+        leftButton.setColorFilter(ContextCompat.getColor(context,
+            R.color.hint_text), android.graphics.PorterDuff.Mode.SRC_IN)
+        leftButton.setOnClickListener{ onLeftArrowClick() }
 
         rightButton.setImageResource(R.drawable.ic_arrow_point_to_right)
         rightButton.layoutParams = params
+        rightButton.setColorFilter(ContextCompat.getColor(context,
+            R.color.hint_text), android.graphics.PorterDuff.Mode.SRC_IN)
+        rightButton.setOnClickListener{ onRightArrowClick() }
+
         dayListLayout.addView(leftButton)
         dayListLayout.addView(daysContainer)
         dayListLayout.addView(rightButton)
         setImage(selectedDay)
         setOnClickListeners()
+    }
+
+    fun onLeftArrowClick() {
+
+    }
+
+    fun onRightArrowClick() {
+
     }
 
     private fun initDayCard(day: String, dateOf: String, position: Int): LinearLayout {

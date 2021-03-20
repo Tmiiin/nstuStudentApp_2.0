@@ -26,10 +26,9 @@ import kotlin.collections.ArrayList
 class ScheduleFragment : Fragment(){
 
     lateinit var mSettings: SharedPreferences
-    private var mapOfLessons: MutableMap<String, List<Lesson>> =
-        hashMapOf()
     private lateinit var presenter: SchedulePresenter
     val TAG = "ScreenSaverView"
+    val groupList = listOf("ПМ-71", "ПМ-72", "ПМ-81")
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -39,12 +38,11 @@ class ScheduleFragment : Fragment(){
     }
 
     private fun initSpinner(){
-        ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item, listOf("ПМ-71", "ПМ-72", "ПМ-81")
-        ).also { adapter ->
+        ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item, groupList)
+            .also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner_group.adapter = adapter
         }
-        spinner_group.prompt = "Выберите группу"
         spinner_group.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 presenter.getSchedule("%D0%9F%D0%9C-71")
@@ -59,12 +57,12 @@ class ScheduleFragment : Fragment(){
     }
 
     fun setMapOfLessons(map: ArrayList<LessonsOnDay>){
-        this.mapOfLessons.clear()
+        val thisMap = hashMapOf<String, List<Lesson>>()
         for(item in map) {
-            this.mapOfLessons[item.day] = item.lessons
+            thisMap[item.day] = item.lessons
         }
-        Log.i(TAG, "Set map of: $mapOfLessons")
-        day_list_view.setData(mapOfLessons)
+        Log.i(TAG, "Set map of: $thisMap")
+        day_list_view.setData(thisMap)
     }
 
     private fun initPresenter() {

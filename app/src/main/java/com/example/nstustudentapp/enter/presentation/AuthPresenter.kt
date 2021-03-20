@@ -46,6 +46,7 @@ class AuthPresenter(private val loginUseCase: LoginUseCase) {
 
     private fun handleLoginResponse(msg: AuthServerResponseModel) {
         Log.i(TAG, "token is: ${msg.tokenId}")
+        Log.i(TAG, msg.successUrl)
         view?.setToken(msg.tokenId)
         view?.goToScheduleFragment()
     }
