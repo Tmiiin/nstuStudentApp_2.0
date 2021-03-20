@@ -8,7 +8,7 @@ class Constants {
         const val error2 = "error in authorization"
         const val error3 = "error in username or password"
         const val URLForAuthentification = "https://login.nstu.ru/ssoservice/json/"
-        const val URLforGetSchedule = "http://217.71.129.139:4491/"  //"http://mobile-backend.cloud.nstu.ru/api/v0.1/semester_schedule/"
+        const val URLforGetSchedule = "http://217.71.129.139:4492/"  //"http://mobile-backend.cloud.nstu.ru/api/v0.1/semester_schedule/"
         const val URLforGetStudent = "http://mobile-backend.cloud.nstu.ru:80/api/v0.1/"
         const val APP_PREFERENCES = "userData"
         const val TOKEN = "tokenID"

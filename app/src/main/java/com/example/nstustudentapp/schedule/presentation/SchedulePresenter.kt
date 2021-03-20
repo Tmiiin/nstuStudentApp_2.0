@@ -8,6 +8,7 @@ import com.example.nstustudentapp.schedule.ui.ScheduleFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.net.URLEncoder
 
 class SchedulePresenter(
     private val getScheduleUseCase: GetScheduleUseCase,
@@ -30,7 +31,8 @@ class SchedulePresenter(
     fun getSchedule(group: String) {
         if(group.isNotEmpty()){
             try {
-                myDisposable = group.let {
+                val groupUTF8 = URLEncoder.encode(group, "UTF-8")
+                myDisposable = groupUTF8.let {
                     getScheduleUseCase(it)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())

@@ -2,30 +2,52 @@ package com.example.nstustudentapp.schedule.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.lifecycle.MutableLiveData
+import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.nstustudentapp.R
 import com.example.nstustudentapp.schedule.data.model.Days
+import com.example.nstustudentapp.schedule.data.model.Lesson
+import com.example.nstustudentapp.schedule.presentation.LessonAdapter
+import kotlinx.android.synthetic.main.custom_schedule_view.view.*
 import java.time.LocalDate
 import java.time.temporal.TemporalField
 import java.time.temporal.WeekFields
 import java.util.*
 
+
 class DaysListView : LinearLayout {
 
     private val listOfDays: MutableList<LinearLayout> = mutableListOf()
     private var selectedDay: Int = 0
-    private val cardImageSize :Int = 40
-    val observableDay: MutableLiveData<Int> = MutableLiveData()
+    private val cardImageSize: Int = 40
+    private var mapOfLessons: MutableMap<String, List<Lesson>> =
+        hashMapOf()
+    val TAG = "DaysListView"
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         init(context)
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    fun setData(map: MutableMap<String, List<Lesson>>){
+        this.mapOfLessons = map
+        val day = Days.values()[selectedDay].day
+        setListOfLesson(mapOfLessons[day]!!)
+    }
+
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         init(context)
     }
 
@@ -36,17 +58,32 @@ class DaysListView : LinearLayout {
     private fun setOnClickListeners() {
         listOfDays.forEachIndexed { index, item ->
             item.setOnClickListener {
-                setImage(it.tag.toString().toInt())
-                observableDay.postValue(index)
+                val selectedDay = it.tag.toString().toInt()
+                setImage(selectedDay)
+                Log.i(TAG, "Selected day $it, value is ${Days.values()[selectedDay].day}")
+                val day = Days.values()[selectedDay].day
+                Log.i(TAG, "List is: ${mapOfLessons[day]}")
+                if(mapOfLessons[day].isNullOrEmpty())
+                    setListOfLesson(listOf())
+                else setListOfLesson(mapOfLessons[day]!!)
             }
         }
     }
 
     private fun init(context: Context) {
-        this.orientation = HORIZONTAL
-        this.weightSum = 6F
-        this.gravity = Gravity.CENTER_VERTICAL
+        initDayListView(context)
+        initRecyclerView()
+        this.orientation = VERTICAL
+        this.addView(dayListLayout)
+        this.addView(scheduleRecyclerView)
+    }
 
+    val dayListLayout: LinearLayout = LinearLayout(context)
+
+    private fun initDayListView(context: Context) {
+        dayListLayout.orientation = HORIZONTAL
+        dayListLayout.weightSum = 6F
+        dayListLayout.gravity = Gravity.CENTER_VERTICAL
         val daysContainer = LinearLayout(context)
         val leftButton = ImageView(context)
         val rightButton = ImageView(context)
@@ -75,9 +112,9 @@ class DaysListView : LinearLayout {
 
         rightButton.setImageResource(R.drawable.ic_arrow_point_to_right)
         rightButton.layoutParams = params
-        this.addView(leftButton)
-        this.addView(daysContainer)
-        this.addView(rightButton)
+        dayListLayout.addView(leftButton)
+        dayListLayout.addView(daysContainer)
+        dayListLayout.addView(rightButton)
         setImage(selectedDay)
         setOnClickListeners()
     }
@@ -116,5 +153,49 @@ class DaysListView : LinearLayout {
         selectedDay = day
         selectedViewImage.visibility = GONE
         nowSelectedViewImage.visibility = VISIBLE
+    }
+
+    private val listOfLessons: MutableList<Lesson> = arrayListOf()
+    lateinit var lessonAdapter: LessonAdapter
+    private var scheduleRecyclerView: ConstraintLayout = ConstraintLayout(context)
+    private lateinit var recyclerView: RecyclerView
+
+    private fun initRecyclerView() {
+        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        inflater.inflate(R.layout.custom_schedule_view, scheduleRecyclerView)
+        scheduleRecyclerView.schedule_rv_lessons.layoutManager = LinearLayoutManager(context)
+        recyclerView = scheduleRecyclerView.schedule_rv_lessons
+        lessonAdapter = LessonAdapter { onLessonClick(it) }
+        lessonAdapter.data = listOfLessons
+        scheduleRecyclerView.schedule_rv_lessons.adapter = lessonAdapter
+        showProgressBar()
+    }
+
+    private fun setListOfLesson(list: List<Lesson>) {
+        this.listOfLessons.clear()
+        this.listOfLessons.addAll(list)
+        lessonAdapter.notifyDataSetChanged()
+        hideProgressBar()
+    }
+
+    fun showProgressBar() {
+        recyclerView.visibility = View.GONE
+        scheduleRecyclerView.schedule_text_data_is_empty.visibility = View.GONE
+        scheduleRecyclerView.schedule_progress_bar.visibility = View.VISIBLE
+    }
+
+    fun hideProgressBar() {
+        scheduleRecyclerView.schedule_progress_bar.visibility = View.GONE
+        if (listOfLessons.size == 0)
+            scheduleRecyclerView.schedule_text_data_is_empty.visibility = View.VISIBLE
+        else {
+            scheduleRecyclerView.schedule_text_data_is_empty.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+        }
+    }
+
+
+    private fun onLessonClick(lesson: Lesson) {
+        Toast.makeText(context, lesson.toString(), Toast.LENGTH_LONG).show()
     }
 }

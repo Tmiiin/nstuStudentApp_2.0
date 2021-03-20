@@ -10,6 +10,10 @@ interface ScheduleAPI {
     @GET("schedule")
     fun getSchedule(@Query("groupName") group: String): Single<ScheduleResponseModel>
 
+   // @Header("Content-Type: application/json")
+    @GET("schedule/getGroups")
+    fun getListOfGroups(): Single<String>
+
     /**
      * there should be requests to get the schedule
      * */

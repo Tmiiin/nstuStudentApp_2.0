@@ -7,12 +7,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.nstustudentapp.Constants
 import com.example.nstustudentapp.R
 import com.example.nstustudentapp.enter.ui.MainActivity
-import com.example.nstustudentapp.schedule.data.model.Days
 import com.example.nstustudentapp.schedule.data.model.Lesson
 import com.example.nstustudentapp.schedule.data.model.LessonsOnDay
 import com.example.nstustudentapp.schedule.di.SchedulePresenterFactory
@@ -20,6 +21,7 @@ import com.example.nstustudentapp.schedule.presentation.SchedulePresenter
 
 import kotlinx.android.synthetic.main.schedule_layout.*
 import java.lang.Exception
+import kotlin.collections.ArrayList
 
 class ScheduleFragment : Fragment(){
 
@@ -33,18 +35,36 @@ class ScheduleFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
         mSettings = context?.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)!!
         initPresenter()
-        day_list_view.observableDay.observe(viewLifecycleOwner, {
-            Log.i(TAG, "Selected day $it, value is ${Days.values()[it].day}")
-            recycler_custom_view.setListOfLesson(mapOfLessons.get(Days.values()[it].day)!!)
-            })
-        presenter.getSchedule("%D0%9F%D0%9C-71")
+        initSpinner()
+    }
+
+    private fun initSpinner(){
+        ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item, listOf("ПМ-71", "ПМ-72", "ПМ-81")
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner_group.adapter = adapter
+        }
+        spinner_group.prompt = "Выберите группу"
+        spinner_group.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                presenter.getSchedule("%D0%9F%D0%9C-71")
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                Log.i(TAG, "Selected item is: ${spinner_group.selectedItem}")
+                day_list_view.showProgressBar()
+                presenter.getSchedule(spinner_group.selectedItem.toString())
+            }
+        }
     }
 
     fun setMapOfLessons(map: ArrayList<LessonsOnDay>){
+        this.mapOfLessons.clear()
         for(item in map) {
             this.mapOfLessons[item.day] = item.lessons
         }
-        recycler_custom_view.setListOfLesson(mapOfLessons["пн"]!!)
+        Log.i(TAG, "Set map of: $mapOfLessons")
+        day_list_view.setData(mapOfLessons)
     }
 
     private fun initPresenter() {
@@ -74,8 +94,9 @@ class ScheduleFragment : Fragment(){
     }
 
     fun showError(error: String){
-        recycler_custom_view.hideProgressBar()
+        day_list_view.hideProgressBar()
         Toast.makeText(context, error, Toast.LENGTH_LONG).show()
     }
 
 }
+
