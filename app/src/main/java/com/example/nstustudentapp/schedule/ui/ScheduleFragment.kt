@@ -45,7 +45,7 @@ class ScheduleFragment : Fragment(){
         }
         spinner_group.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                presenter.getSchedule("%D0%9F%D0%9C-71")
+                presenter.getSchedule("ПМ-71")
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

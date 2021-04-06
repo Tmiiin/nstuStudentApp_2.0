@@ -35,6 +35,7 @@ class DaysListView : LinearLayout {
     private lateinit var lessonAdapter: LessonAdapter
     private var scheduleRecyclerView: ConstraintLayout = ConstraintLayout(context)
     private lateinit var recyclerView: RecyclerView
+    private var week = 8;
 
     val TAG = "DaysListView"
 
@@ -176,8 +177,8 @@ class DaysListView : LinearLayout {
         inflater.inflate(R.layout.custom_schedule_view, scheduleRecyclerView)
         scheduleRecyclerView.schedule_rv_lessons.layoutManager = LinearLayoutManager(context)
         recyclerView = scheduleRecyclerView.schedule_rv_lessons
-        lessonAdapter = LessonAdapter { onLessonClick(it) }
-        lessonAdapter.data = listOfLessons
+        lessonAdapter = LessonAdapter ({ onLessonClick(it) }, week)
+        lessonAdapter.setData(listOfLessons)
         scheduleRecyclerView.schedule_rv_lessons.adapter = lessonAdapter
         showProgressBar()
     }
@@ -185,7 +186,7 @@ class DaysListView : LinearLayout {
     private fun setListOfLesson(list: List<Lesson>) {
         this.listOfLessons.clear()
         this.listOfLessons.addAll(list)
-        lessonAdapter.notifyDataSetChanged()
+        lessonAdapter.setData(list)
         hideProgressBar()
     }
 
@@ -197,7 +198,7 @@ class DaysListView : LinearLayout {
 
     fun hideProgressBar() {
         scheduleRecyclerView.schedule_progress_bar.visibility = View.GONE
-        if (listOfLessons.size == 0)
+        if (lessonAdapter.itemCount == 0)
             scheduleRecyclerView.schedule_text_data_is_empty.visibility = View.VISIBLE
         else {
             scheduleRecyclerView.schedule_text_data_is_empty.visibility = View.GONE
