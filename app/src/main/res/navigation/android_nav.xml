@@ -42,6 +42,6 @@
         tools:layout="@layout/profile_layout"/>
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.example.nstustudentapp.schedule.ui.NotificationFragment"
+        android:name="com.example.nstustudentapp.schedule.ui.NoteFragment"
         android:label="NotificationFragment" />
 </navigation>

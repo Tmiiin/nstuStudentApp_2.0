@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_gravity="center"
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,53 +19,36 @@
             android:layout_marginBottom="50dp"
             android:src="@drawable/logo_mobile" />
 
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="5dp"
-            android:orientation="horizontal"
-            android:weightSum="3">
-
-            <EditText
-                android:id="@+id/edit_login"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:background="@color/lightGreen"
-                android:hint="@string/enter_email"
-                android:inputType="text|textEmailAddress"
-                android:paddingLeft="20dp"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:autoSizeTextType="uniform"
-                android:background="@color/lightGreen"
-                android:paddingTop="20dp"
-                android:paddingEnd="5dp"
-                android:paddingBottom="20dp"
-                android:text="@string/domain" />
-        </LinearLayout>
-
-        <EditText
-            android:id="@+id/edit_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="20dp"
-            android:background="@color/lightGreen"
-            android:ems="10"
-            android:hint="@string/enter_password"
-            android:inputType="textPassword"
+            android:hint="@string/enter_email"
             android:paddingLeft="20dp"
             android:paddingTop="20dp"
-            android:paddingBottom="20dp" />
+            android:paddingRight="20dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/lightGreen"
+                android:inputType="text|textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_password"
+            android:padding="20dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/lightGreen"
+                android:ems="10"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/enter_button"
@@ -89,11 +73,12 @@
             android:textSize="16sp" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:text="made by Novosibirsk State Technical University"
+            android:gravity="center"
+            android:text="Сделано в НГТУ-НЭТИ"
             android:textStyle="italic" />
     </LinearLayout>
 </FrameLayout>

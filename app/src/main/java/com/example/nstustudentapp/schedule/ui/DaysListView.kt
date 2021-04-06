@@ -1,9 +1,7 @@
 package com.example.nstustudentapp.schedule.ui
 
 import android.content.Context
-import android.graphics.ColorFilter
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +23,6 @@ import java.time.temporal.TemporalField
 import java.time.temporal.WeekFields
 import java.util.*
 
-
 class DaysListView : LinearLayout {
 
     private val listOfDays: MutableList<LinearLayout> = mutableListOf()
@@ -33,6 +30,12 @@ class DaysListView : LinearLayout {
     private val cardImageSize: Int = 40
     private var mapOfLessons: MutableMap<String, List<Lesson>> =
         hashMapOf()
+    private val dayListLayout: LinearLayout = LinearLayout(context)
+    private val listOfLessons: MutableList<Lesson> = arrayListOf()
+    private lateinit var lessonAdapter: LessonAdapter
+    private var scheduleRecyclerView: ConstraintLayout = ConstraintLayout(context)
+    private lateinit var recyclerView: RecyclerView
+
     val TAG = "DaysListView"
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
@@ -58,7 +61,7 @@ class DaysListView : LinearLayout {
     }
 
     private fun setOnClickListeners() {
-        listOfDays.forEachIndexed { index, item ->
+        listOfDays.forEachIndexed { _, item ->
             item.setOnClickListener {
                 val selectedDay = it.tag.toString().toInt()
                 setImage(selectedDay)
@@ -77,8 +80,6 @@ class DaysListView : LinearLayout {
         this.addView(dayListLayout)
         this.addView(scheduleRecyclerView)
     }
-
-    val dayListLayout: LinearLayout = LinearLayout(context)
 
     private fun initDayListView(context: Context) {
         dayListLayout.orientation = HORIZONTAL
@@ -126,11 +127,11 @@ class DaysListView : LinearLayout {
         setOnClickListeners()
     }
 
-    fun onLeftArrowClick() {
+    private fun onLeftArrowClick() {
 
     }
 
-    fun onRightArrowClick() {
+    private fun onRightArrowClick() {
 
     }
 
@@ -169,11 +170,6 @@ class DaysListView : LinearLayout {
         selectedViewImage.visibility = GONE
         nowSelectedViewImage.visibility = VISIBLE
     }
-
-    private val listOfLessons: MutableList<Lesson> = arrayListOf()
-    lateinit var lessonAdapter: LessonAdapter
-    private var scheduleRecyclerView: ConstraintLayout = ConstraintLayout(context)
-    private lateinit var recyclerView: RecyclerView
 
     private fun initRecyclerView() {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater

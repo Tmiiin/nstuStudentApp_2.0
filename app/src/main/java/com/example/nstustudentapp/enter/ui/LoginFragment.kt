@@ -62,7 +62,7 @@ class LoginFragment : Fragment() {
         val login = edit_login.text.toString()
         val password = edit_password.text.toString()
         Log.d(TAG, "trying to log in")
-        presenter.tryLogin(login + getString(R.string.domain), password)
+        presenter.tryLogin(login, password)
     }
 
     private fun onForgottenPassword() {
