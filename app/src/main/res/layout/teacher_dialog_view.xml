@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="6dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_margin="16dp"
+        android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/dialog_teacher_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:cardCornerRadius="40dp">
+        <ImageView
+            android:src="@drawable/royak"
+            android:id="@+id/dialog_teacher_photo"
+            android:layout_width="80dp"
+            android:layout_height="80dp" />
+        </androidx.cardview.widget.CardView>
+        <TextView
+            android:paddingLeft="6dp"
+            android:id="@+id/dialog_teacher_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Рояк"
+            android:textSize="24sp"
+            app:layout_constraintLeft_toRightOf="@id/dialog_teacher_container"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:padding="6dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/dialog_teacher_surname"
+            android:text="Михаил Эммануилович"
+            app:layout_constraintLeft_toRightOf="@id/dialog_teacher_container"
+            app:layout_constraintTop_toBottomOf="@id/dialog_teacher_name"
+            />
+
+        <TextView
+            android:padding="6dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/dialog_teacher_url"
+            android:text="д.т.н., Профессор ПМт"
+            app:layout_constraintLeft_toRightOf="@id/dialog_teacher_container"
+            app:layout_constraintTop_toBottomOf="@id/dialog_teacher_surname"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

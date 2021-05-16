@@ -3,22 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/android_nav"
-    app:startDestination="@id/screenSaverFragment">
+    app:startDestination="@id/loginFragment">
 
-    <fragment
-        android:id="@+id/screenSaverFragment"
-        tools:layout="@layout/screen_saver_layout"
-        android:name="com.example.nstustudentapp.enter.ui.ScreenSaverFragment"
-        android:label="ScreenSaverFragment" >
-        <action
-            android:id="@+id/action_screenSaverFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-        <action
-            android:id="@+id/action_screenSaverFragment_to_navigation_schedule"
-            app:destination="@id/navigation_schedule"
-            app:popUpTo="@+id/android_nav"
-            app:popUpToInclusive="true"/>
-    </fragment>
     <fragment
         android:id="@+id/loginFragment"
         tools:layout="@layout/login_layout"

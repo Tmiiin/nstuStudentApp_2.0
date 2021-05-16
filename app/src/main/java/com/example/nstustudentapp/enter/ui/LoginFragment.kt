@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.example.nstustudentapp.Constants
 import com.example.nstustudentapp.R
-import com.example.nstustudentapp.enter.di.LoginPresenterFactory
 import com.example.nstustudentapp.enter.presentation.AuthPresenter
 import kotlinx.android.synthetic.main.login_layout.*
 import kotlinx.coroutines.CoroutineScope
@@ -37,18 +36,21 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mSettings = context?.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)!!
         initPresenter()
+        val token = mSettings.getString(AuthPresenter.accessToken, "")
+        if(token!!.isNotEmpty())
+            presenter.isTokenValid(token)
         enter_button.setOnClickListener { onLoginButtonClick() }
         forgotten_password.setOnClickListener { onForgottenPassword() }
         super.onViewCreated(view, savedInstanceState)
     }
 
     private fun initPresenter() {
-        presenter = LoginPresenterFactory.create()
+        presenter = AuthPresenter()
         presenter.attachView(this)
     }
 
-    fun setToken(token: String) {
-        mSettings.edit().putString("tokenID", token).apply()
+    fun setToken(token: String, name: String) {
+        mSettings.edit().putString(name, token).apply()
     }
 
     override fun onCreateView(

@@ -18,51 +18,74 @@ import com.example.nstustudentapp.schedule.data.model.Lesson
 import com.example.nstustudentapp.schedule.data.model.LessonsOnDay
 import com.example.nstustudentapp.schedule.di.SchedulePresenterFactory
 import com.example.nstustudentapp.schedule.presentation.SchedulePresenter
-
+import com.example.nstustudentapp.schedule.presentation.ViewPagerAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.schedule_layout.*
-import java.lang.Exception
-import kotlin.collections.ArrayList
 
-class ScheduleFragment : Fragment(){
+
+class ScheduleFragment : Fragment() {
 
     lateinit var mSettings: SharedPreferences
     private lateinit var presenter: SchedulePresenter
     val TAG = "ScreenSaverView"
     val groupList = listOf("ПМ-71", "ПМ-72", "ПМ-81")
+val adapter = createViewPagerAdapter()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mSettings = context?.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)!!
         initPresenter()
         initSpinner()
+        view_pager.adapter = adapter
+        TabLayoutMediator(
+            tab_layout, view_pager
+        ) { tab, position ->
+            tab.setCustomView(R.layout.days_of_week_schedule)
+         }
+            .attach();
     }
 
-    private fun initSpinner(){
-        ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item, groupList)
+    private fun createViewPagerAdapter(): ViewPagerAdapter {
+        val adapter = ViewPagerAdapter(this);
+        return adapter;
+    }
+
+    private fun initSpinner() {
+        ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, groupList)
             .also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinner_group.adapter = adapter
-        }
-        spinner_group.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinner_group.adapter = adapter
+            }
+        spinner_group.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 presenter.getSchedule("ПМ-71")
             }
 
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 Log.i(TAG, "Selected item is: ${spinner_group.selectedItem}")
-                day_list_view.showProgressBar()
+                //    day_list_view.showProgressBar()
                 presenter.getSchedule(spinner_group.selectedItem.toString())
             }
         }
     }
 
-    fun setMapOfLessons(map: ArrayList<LessonsOnDay>){
-        val thisMap = hashMapOf<String, List<Lesson>>()
-        for(item in map) {
-            thisMap[item.day] = item.lessons
+    val listOfLessonsMap = hashMapOf<String, List<Lesson>>()
+    fun setMapOfLessons(map: ArrayList<LessonsOnDay>) {
+        for (item in map) {
+            listOfLessonsMap[item.day] = item.lessons
         }
-        Log.i(TAG, "Set map of: $thisMap")
-        day_list_view.setData(thisMap)
+        Log.i(TAG, "Set map of: $listOfLessonsMap")
+        adapter.lessonFragment.setListOfLesson(listOfLessonsMap["пн"]!!)
+        //   day_list_view.setData(thisMap)
+    }
+
+    public fun getListOfLesson(position: String): List<Lesson>? {
+        return listOfLessonsMap[position]
     }
 
     private fun initPresenter() {
@@ -91,8 +114,8 @@ class ScheduleFragment : Fragment(){
         super.onAttach(context)
     }
 
-    fun showError(error: String){
-        day_list_view.hideProgressBar()
+    fun showError(error: String) {
+        //  day_list_view.hideProgressBar()
         Toast.makeText(context, error, Toast.LENGTH_LONG).show()
     }
 

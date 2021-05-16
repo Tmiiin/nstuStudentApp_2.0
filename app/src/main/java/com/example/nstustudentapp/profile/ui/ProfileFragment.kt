@@ -7,14 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.nstustudentapp.R
-import com.example.nstustudentapp.enter.di.GetStudentPresenterFactory
-import com.example.nstustudentapp.enter.presentation.ScreenSaverPresenter
 
 class ProfileFragment: Fragment() {
 
     lateinit var mSettings: SharedPreferences
     val APP_PREFERENCES = "userData"
-    private var presenter: ScreenSaverPresenter? = null
+  //  private var presenter: ScreenSaverPresenter? = null
     val TAG = "ScreenSaverView"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -25,7 +23,7 @@ class ProfileFragment: Fragment() {
 
 
     private fun initPresenter() {
-        presenter = GetStudentPresenterFactory.create(mSettings)
+//        presenter = GetStudentPresenterFactory.create(mSettings)
         //  presenter?.attachView(this)
     }
 
@@ -33,11 +31,11 @@ class ProfileFragment: Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.screen_saver_layout, null)
+        return inflater.inflate(R.layout.profile_layout, null)
     }
 
     override fun onDestroy() {
-        presenter?.onDestroy()
+  //      presenter?.onDestroy()
         super.onDestroy()
     }
 }
