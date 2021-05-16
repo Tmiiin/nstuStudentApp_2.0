@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.nstustudentapp.Constants
 import com.example.nstustudentapp.R
-import com.example.nstustudentapp.enter.presentation.AuthPresenter
+import com.example.nstustudentapp.enter.presentation.AuthViewModel
 import com.example.nstustudentapp.schedule.data.model.Lesson
 import com.example.nstustudentapp.schedule.data.model.Teacher
 import com.example.nstustudentapp.schedule.data.network.IRetrofitSchedule
@@ -62,10 +62,10 @@ class LessonsFragment : Fragment() {
         val teacherInfo = lesson.teacherInfo[0]
         val teacherId = Integer.parseInt(teacherInfo.teacherUrl.split("/").last())
         val prefs = context?.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)!!
-        val accessToken = prefs.getString(AuthPresenter.accessToken, "")/*
+        val accessToken = prefs.getString(AuthViewModel.accessToken, "")/*
         val refreshToken = prefs.getString(AuthPresenter.refreshToken, "")
         val csrfToken = prefs.getString(AuthPresenter.csrnRefreshToken, "")*/
-        val cookie = "${AuthPresenter.accessToken}=${accessToken};"
+        val cookie = "${AuthViewModel.accessToken}=${accessToken};"
         val retrofitTeacher = IRetrofitSchedule().getRetrofitTeacherService().getTeacherInfo(cookie, teacherId)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())

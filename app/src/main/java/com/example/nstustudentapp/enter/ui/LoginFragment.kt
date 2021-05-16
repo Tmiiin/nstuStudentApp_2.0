@@ -1,56 +1,52 @@
 package com.example.nstustudentapp.enter.ui
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.nstustudentapp.Constants
 import com.example.nstustudentapp.R
-import com.example.nstustudentapp.enter.presentation.AuthPresenter
+import com.example.nstustudentapp.enter.data.model.TokenInfo
+import com.example.nstustudentapp.enter.presentation.AuthViewModel
 import kotlinx.android.synthetic.main.login_layout.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
 
-    val TAG = "AuthActivity"
+    val TAG = "LoginFragment"
     lateinit var mSettings: SharedPreferences
-
-    private lateinit var build: AlertDialog.Builder
-    private lateinit var presenter: AuthPresenter
+    private lateinit var errorDialog: AlertDialog.Builder
     private var isShown: Boolean = false
+    private val authViewModel: AuthViewModel by lazy {
+        ViewModelProvider(this).get(AuthViewModel::class.java) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mSettings = context?.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)!!
-        initPresenter()
-        val token = mSettings.getString(AuthPresenter.accessToken, "")
+        val token = mSettings.getString(AuthViewModel.accessToken, "")
+        val refreshToken = mSettings.getString(AuthViewModel.refreshToken, "")
+        authViewModel.setRefreshToken(refreshToken!!)
         if(token!!.isNotEmpty())
-            presenter.isTokenValid(token)
+            authViewModel.isTokenValid(token)
         enter_button.setOnClickListener { onLoginButtonClick() }
         forgotten_password.setOnClickListener { onForgottenPassword() }
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun initPresenter() {
-        presenter = AuthPresenter()
-        presenter.attachView(this)
+    private fun setToken(tokenInfo: TokenInfo) {
+        mSettings.edit().putString(tokenInfo.tokenName, tokenInfo.token).apply()
     }
 
-    fun setToken(token: String, name: String) {
-        mSettings.edit().putString(name, token).apply()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        authViewModel.getErrorLiveData().observe(this, { if (it) showLoginError() })
+        authViewModel.getSuccessAuthLiveData().observe(this, { goToScheduleFragment() })
+        authViewModel.getTokenLiveData().observe(this, { setToken(it) })
     }
 
     override fun onCreateView(
@@ -63,27 +59,25 @@ class LoginFragment : Fragment() {
     private fun onLoginButtonClick() {
         val login = edit_login.text.toString()
         val password = edit_password.text.toString()
-        Log.d(TAG, "trying to log in")
-        presenter.tryLogin(login, password)
+        Log.d(TAG, "Trying to log in with password: $password and login: $login")
+        authViewModel.tryLogin(login, password)
     }
 
     private fun onForgottenPassword() {
         //some code
     }
 
-    fun showLoginError() {
-        Log.d(TAG, "you should see login error")
-        if (!::build.isInitialized) {
+    private fun showLoginError() {
+        Log.d(TAG, "Login error")
+        if (!::errorDialog.isInitialized) {
             createAlertDialog()
         }
         if (!isShown)
-            CoroutineScope(Dispatchers.Main).launch {
                 isShown = true
-                build.show()
-            }
+                errorDialog.show()
     }
 
-    fun goToScheduleFragment() {
+    private fun goToScheduleFragment() {
         Log.d(TAG, "go to new activity")
         Navigation.findNavController(requireView())
             .navigate(LoginFragmentDirections.actionLoginFragmentToScheduleFragment())
@@ -91,7 +85,7 @@ class LoginFragment : Fragment() {
 
 
     private fun createAlertDialog() {
-        build = context?.let {
+        errorDialog = context?.let {
             AlertDialog.Builder(it)
                 .setMessage(R.string.error_login_message)
                 .setPositiveButton(R.string.ok) { dialog, _ ->
@@ -102,8 +96,4 @@ class LoginFragment : Fragment() {
         }!!
     }
 
-    override fun onDestroy() {
-        presenter.onDestroy()
-        super.onDestroy()
-    }
 }

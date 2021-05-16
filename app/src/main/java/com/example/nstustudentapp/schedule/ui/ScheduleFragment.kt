@@ -29,13 +29,14 @@ class ScheduleFragment : Fragment() {
     private lateinit var presenter: SchedulePresenter
     val TAG = "ScreenSaverView"
     val groupList = listOf("ПМ-71", "ПМ-72", "ПМ-81")
-val adapter = createViewPagerAdapter()
+    lateinit var adapter: ViewPagerAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mSettings = context?.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)!!
         initPresenter()
         initSpinner()
+        adapter = ViewPagerAdapter(this);
         view_pager.adapter = adapter
         TabLayoutMediator(
             tab_layout, view_pager
@@ -43,11 +44,6 @@ val adapter = createViewPagerAdapter()
             tab.setCustomView(R.layout.days_of_week_schedule)
          }
             .attach();
-    }
-
-    private fun createViewPagerAdapter(): ViewPagerAdapter {
-        val adapter = ViewPagerAdapter(this);
-        return adapter;
     }
 
     private fun initSpinner() {
