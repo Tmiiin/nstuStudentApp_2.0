@@ -24,14 +24,14 @@ class LoginFragment : Fragment() {
     private lateinit var errorDialog: AlertDialog.Builder
     private var isShown: Boolean = false
     private val authViewModel: AuthViewModel by lazy {
-        ViewModelProvider(this).get(AuthViewModel::class.java) }
+        ViewModelProvider(this).get(AuthViewModel::class.java)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mSettings = context?.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)!!
         val token = mSettings.getString(AuthViewModel.accessToken, "")
-        val refreshToken = mSettings.getString(AuthViewModel.refreshToken, "")
-        authViewModel.setRefreshToken(refreshToken!!)
-        if(token!!.isNotEmpty())
+        Log.i(TAG, "Token is: $token");
+        if (token!!.isNotEmpty())
             authViewModel.isTokenValid(token)
         enter_button.setOnClickListener { onLoginButtonClick() }
         forgotten_password.setOnClickListener { onForgottenPassword() }
@@ -56,9 +56,11 @@ class LoginFragment : Fragment() {
         return inflater.inflate(R.layout.login_layout, null)
     }
 
+    lateinit var login: String
+    lateinit var password: String
     private fun onLoginButtonClick() {
-        val login = edit_login.text.toString()
-        val password = edit_password.text.toString()
+        login = edit_login.text.toString()
+        password = edit_password.text.toString()
         Log.d(TAG, "Trying to log in with password: $password and login: $login")
         authViewModel.tryLogin(login, password)
     }
@@ -69,16 +71,32 @@ class LoginFragment : Fragment() {
 
     private fun showLoginError() {
         Log.d(TAG, "Login error")
+        if (mSettings.contains("login") && mSettings.contains("password")) {
+            val login = mSettings.getString("login", "")
+            val password = mSettings.getString("password", "")
+            if (login!!.isNotEmpty() && password!!.isNotEmpty()) {
+                authViewModel.tryLogin(login, password)
+            } else {
+                showLoginEror()
+            }
+        } else showLoginEror()
+    }
+
+    private fun showLoginEror() {
         if (!::errorDialog.isInitialized) {
             createAlertDialog()
         }
         if (!isShown)
-                isShown = true
-                errorDialog.show()
+            isShown = true
+        errorDialog.show()
     }
 
     private fun goToScheduleFragment() {
         Log.d(TAG, "go to new activity")
+        val preferencesEditor = mSettings.edit()
+        preferencesEditor.putString("login", login)
+        preferencesEditor.putString("password", password)
+        preferencesEditor.apply()
         Navigation.findNavController(requireView())
             .navigate(LoginFragmentDirections.actionLoginFragmentToScheduleFragment())
     }

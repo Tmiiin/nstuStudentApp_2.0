@@ -45,7 +45,6 @@ class LessonsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.recycler_schedule_layout, container, false);
     }
 
@@ -62,11 +61,8 @@ class LessonsFragment : Fragment() {
         val teacherInfo = lesson.teacherInfo[0]
         val teacherId = Integer.parseInt(teacherInfo.teacherUrl.split("/").last())
         val prefs = context?.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)!!
-        val accessToken = prefs.getString(AuthViewModel.accessToken, "")/*
-        val refreshToken = prefs.getString(AuthPresenter.refreshToken, "")
-        val csrfToken = prefs.getString(AuthPresenter.csrnRefreshToken, "")*/
-        val cookie = "${AuthViewModel.accessToken}=${accessToken};"
-        val retrofitTeacher = IRetrofitSchedule().getRetrofitTeacherService().getTeacherInfo(cookie, teacherId)
+        val accessToken = prefs.getString(AuthViewModel.accessToken, "")
+        val retrofitTeacher = IRetrofitSchedule().getRetrofitTeacherService().getTeacherInfo(accessToken!!, teacherId)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
             .subscribe({ success -> createAlertDialog(success) },
