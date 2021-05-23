@@ -11,10 +11,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.view.doOnLayout
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.findFragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.nstustudentapp.Constants
 import com.example.nstustudentapp.R
@@ -23,16 +20,16 @@ import com.example.nstustudentapp.schedule.data.model.Days
 import com.example.nstustudentapp.schedule.data.model.Lesson
 import com.example.nstustudentapp.schedule.data.model.LessonsOnDay
 import com.example.nstustudentapp.schedule.di.SchedulePresenterFactory
-import com.example.nstustudentapp.schedule.presentation.SchedulePresenter
+import com.example.nstustudentapp.schedule.presentation.DateUtils
+import com.example.nstustudentapp.schedule.presentation.ScheduleViewModel
 import com.example.nstustudentapp.schedule.presentation.ViewPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.schedule_layout.*
 
-
 class ScheduleFragment : Fragment() {
 
     lateinit var mSettings: SharedPreferences
-    private lateinit var presenter: SchedulePresenter
+    private lateinit var presenter: ScheduleViewModel
     val TAG = "ScreenSaverView"
     val groupList = listOf("ПМ-71", "ПМ-72", "ПМ-81")
     lateinit var adapter: ViewPagerAdapter
@@ -44,18 +41,25 @@ class ScheduleFragment : Fragment() {
         initSpinner()
         adapter = ViewPagerAdapter(this, 6);
         view_pager.adapter = adapter
+        view_pager.offscreenPageLimit = 6
         TabLayoutMediator(
             tab_layout, view_pager
         ) { tab, position ->
             run {
                 val dayView = layoutInflater.inflate(R.layout.days_of_week_schedule, null, false)
                 val textDay = dayView.findViewById<TextView>(R.id.calendar_day)
-                textDay.setText(Days.values()[position].day)
-                tab.setCustomView(dayView)
+                val prevWeek = DateUtils().getCurrentWeek()
+                val date = dayView.findViewById<TextView>(R.id.date)
+                date.text = prevWeek[position]
+                textDay.text = Days.values()[position].day
+                tab.customView = dayView
             }
         }
             .attach()
         view_pager.registerOnPageChangeCallback(schedulePageChangeCallback)
+        presenter.listOfLessonsLiveData.observe(viewLifecycleOwner, {
+            setMapOfLessons(it)
+        })
     }
 
     var schedulePageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
@@ -106,14 +110,9 @@ class ScheduleFragment : Fragment() {
         adapter.notifyDataSetChanged()
     }
 
-    public fun getListOfLesson(position: String): List<Lesson>? {
-        return listOfLessonsMap[position]
-    }
-
     private fun initPresenter() {
         try {
-            presenter = SchedulePresenterFactory.create(mSettings)
-            presenter.attachView(this)
+            presenter = SchedulePresenterFactory.create()
         } catch (e: Exception) {
             Log.e(TAG, e.message.toString())
         }
@@ -137,7 +136,7 @@ class ScheduleFragment : Fragment() {
     }
 
     fun showError(error: String) {
-        //  day_list_view.hideProgressBar()
+       // (childFragmentManager.findFragmentByTag("f" + view_pager.currentItem) as LessonsFragment).hideProgressBar()
         Toast.makeText(context, error, Toast.LENGTH_LONG).show()
     }
 
