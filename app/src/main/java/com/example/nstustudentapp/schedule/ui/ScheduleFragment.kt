@@ -3,14 +3,13 @@ package com.example.nstustudentapp.schedule.ui
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.nstustudentapp.Constants
@@ -24,6 +23,8 @@ import com.example.nstustudentapp.schedule.presentation.DateUtils
 import com.example.nstustudentapp.schedule.presentation.ScheduleViewModel
 import com.example.nstustudentapp.schedule.presentation.ViewPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.android.material.textview.MaterialTextView
+import kotlinx.android.synthetic.main.days_of_week_schedule.*
 import kotlinx.android.synthetic.main.schedule_layout.*
 
 class ScheduleFragment : Fragment() {
@@ -33,9 +34,11 @@ class ScheduleFragment : Fragment() {
     val TAG = "ScreenSaverView"
     val groupList = listOf("ПМ-71", "ПМ-72", "ПМ-81")
     lateinit var adapter: ViewPagerAdapter
+    lateinit var dateUtils: DateUtils
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        dateUtils = DateUtils()
         mSettings = context?.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)!!
         initPresenter()
         initSpinner()
@@ -48,18 +51,22 @@ class ScheduleFragment : Fragment() {
             run {
                 val dayView = layoutInflater.inflate(R.layout.days_of_week_schedule, null, false)
                 val textDay = dayView.findViewById<TextView>(R.id.calendar_day)
-                val prevWeek = DateUtils().getCurrentWeek()
-                val date = dayView.findViewById<TextView>(R.id.date)
-                date.text = prevWeek[position]
                 textDay.text = Days.values()[position].day
                 tab.customView = dayView
             }
+            dateUtils.getCurrentWeek()
         }
             .attach()
         view_pager.registerOnPageChangeCallback(schedulePageChangeCallback)
         presenter.listOfLessonsLiveData.observe(viewLifecycleOwner, {
             setMapOfLessons(it)
         })
+        dateUtils.dateLiveData.observe(viewLifecycleOwner, {
+            for(i in 0 until tab_layout.tabCount)
+                ((tab_layout.getTabAt(i)?.customView as LinearLayout)
+                    .getChildAt(0) as MaterialTextView).text = it[i]
+        })
+        last_week.setOnClickListener { dateUtils.getPreviousWeek() }
     }
 
     var schedulePageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
@@ -100,7 +107,7 @@ class ScheduleFragment : Fragment() {
     }
 
     private val listOfLessonsMap = hashMapOf<String, List<Lesson>>()
-    fun setMapOfLessons(map: ArrayList<LessonsOnDay>) {
+    private fun setMapOfLessons(map: ArrayList<LessonsOnDay>) {
         for (item in map) {
             listOfLessonsMap[item.day] = item.lessons
         }
