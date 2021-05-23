@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.nstustudentapp.Constants
 import com.example.nstustudentapp.R
 import com.example.nstustudentapp.enter.presentation.AuthViewModel
@@ -27,18 +28,7 @@ import java.net.URL
 
 class LessonsFragment : Fragment() {
 
-    private val listOfLessons: MutableList<Lesson> = arrayListOf()
     private lateinit var lessonAdapter: LessonAdapter
-
-    val ARG_COUNT = "arg_count"
-    var counter = 0
-
-   override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState);
-        if (arguments != null) {
-            counter = requireArguments().getInt(ARG_COUNT);
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,8 +42,8 @@ class LessonsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState);
         lessonAdapter = LessonAdapter({ onLessonClick(it) }, week)
-        lessonAdapter.setData(listOfLessons)
         lesson_rv.adapter = lessonAdapter
+        lesson_rv.layoutManager = LinearLayoutManager(activity);
         showProgressBar()
     }
 
@@ -98,13 +88,13 @@ class LessonsFragment : Fragment() {
         }
     }
 
-    fun showProgressBar() {
+    private fun showProgressBar() {
         lesson_rv.visibility = View.GONE
         schedule_text_data_is_empty.visibility = View.GONE
         schedule_progress_bar.visibility = View.VISIBLE
     }
 
-    fun hideProgressBar() {
+    private fun hideProgressBar() {
         schedule_progress_bar.visibility = View.GONE
         if (lessonAdapter.itemCount == 0)
             schedule_text_data_is_empty.visibility = View.VISIBLE
@@ -114,9 +104,7 @@ class LessonsFragment : Fragment() {
         }
     }
 
-    public fun setListOfLesson(list: List<Lesson>) {
-        this.listOfLessons.clear()
-        this.listOfLessons.addAll(list)
+    fun setListOfLesson(list: List<Lesson>) {
         lessonAdapter.setData(list)
         hideProgressBar()
     }

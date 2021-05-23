@@ -5,24 +5,21 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.adapter.FragmentViewHolder
+import com.example.nstustudentapp.schedule.data.model.Lesson
 import com.example.nstustudentapp.schedule.ui.LessonsFragment
 import com.example.nstustudentapp.schedule.ui.ScheduleFragment
 
-class ViewPagerAdapter(@NonNull val fragmentActivity: ScheduleFragment?) :
-    FragmentStateAdapter(fragmentActivity!!) {
-
-    public val lessonFragment = LessonsFragment()
+class ViewPagerAdapter(@NonNull val fragmentActivity: ScheduleFragment, private val itemCounts: Int) :
+    FragmentStateAdapter(fragmentActivity) {
 
     @NonNull
     override fun createFragment(position: Int): Fragment {
-         return lessonFragment
+         return LessonsFragment()
     }
 
     override fun getItemCount(): Int {
-        return CARD_ITEM_SIZE
+        return itemCounts
     }
 
-    companion object {
-        private const val CARD_ITEM_SIZE = 6
-    }
 }

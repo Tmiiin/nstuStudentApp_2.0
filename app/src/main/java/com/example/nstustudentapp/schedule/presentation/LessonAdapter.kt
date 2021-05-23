@@ -14,7 +14,7 @@ class LessonAdapter(
 ) :
     RecyclerView.Adapter<LessonAdapter.LessonViewHolder>() {
 
-    private lateinit var data: List<Lesson>
+    private var data: List<Lesson> = listOf()
 
     fun setData(listOfLessons: List<Lesson>) {
         data = listOf()

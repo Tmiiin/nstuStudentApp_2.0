@@ -9,11 +9,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.doOnLayout
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.findFragment
+import androidx.viewpager2.widget.ViewPager2
 import com.example.nstustudentapp.Constants
 import com.example.nstustudentapp.R
 import com.example.nstustudentapp.enter.ui.MainActivity
+import com.example.nstustudentapp.schedule.data.model.Days
 import com.example.nstustudentapp.schedule.data.model.Lesson
 import com.example.nstustudentapp.schedule.data.model.LessonsOnDay
 import com.example.nstustudentapp.schedule.di.SchedulePresenterFactory
@@ -36,14 +42,33 @@ class ScheduleFragment : Fragment() {
         mSettings = context?.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)!!
         initPresenter()
         initSpinner()
-        adapter = ViewPagerAdapter(this);
+        adapter = ViewPagerAdapter(this, 6);
         view_pager.adapter = adapter
         TabLayoutMediator(
             tab_layout, view_pager
         ) { tab, position ->
-            tab.setCustomView(R.layout.days_of_week_schedule)
-         }
-            .attach();
+            run {
+                val dayView = layoutInflater.inflate(R.layout.days_of_week_schedule, null, false)
+                val textDay = dayView.findViewById<TextView>(R.id.calendar_day)
+                textDay.setText(Days.values()[position].day)
+                tab.setCustomView(dayView)
+            }
+        }
+            .attach()
+        view_pager.registerOnPageChangeCallback(schedulePageChangeCallback)
+    }
+
+    var schedulePageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            if(listOfLessonsMap.containsKey(Days.values()[position].day))
+                (childFragmentManager.findFragmentByTag("f" + view_pager.currentItem) as LessonsFragment)
+                    .setListOfLesson(listOfLessonsMap[Days.values()[position].day]!!)
+        }
+    }
+
+    override fun onDetach() {
+        view_pager.unregisterOnPageChangeCallback(schedulePageChangeCallback)
+        super.onDetach()
     }
 
     private fun initSpinner() {
@@ -70,14 +95,15 @@ class ScheduleFragment : Fragment() {
         }
     }
 
-    val listOfLessonsMap = hashMapOf<String, List<Lesson>>()
+    private val listOfLessonsMap = hashMapOf<String, List<Lesson>>()
     fun setMapOfLessons(map: ArrayList<LessonsOnDay>) {
         for (item in map) {
             listOfLessonsMap[item.day] = item.lessons
         }
         Log.i(TAG, "Set map of: $listOfLessonsMap")
-        adapter.lessonFragment.setListOfLesson(listOfLessonsMap["пн"]!!)
-        //   day_list_view.setData(thisMap)
+        (childFragmentManager.findFragmentByTag("f" + view_pager.currentItem) as LessonsFragment)
+                .setListOfLesson(listOfLessonsMap[Days.values()[0].day]!!)
+        adapter.notifyDataSetChanged()
     }
 
     public fun getListOfLesson(position: String): List<Lesson>? {

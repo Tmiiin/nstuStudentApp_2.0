@@ -56,13 +56,13 @@ class LoginFragment : Fragment() {
         return inflater.inflate(R.layout.login_layout, null)
     }
 
-    lateinit var login: String
-    lateinit var password: String
+    var login: String? = null
+    var password: String? = null
     private fun onLoginButtonClick() {
         login = edit_login.text.toString()
         password = edit_password.text.toString()
         Log.d(TAG, "Trying to log in with password: $password and login: $login")
-        authViewModel.tryLogin(login, password)
+        authViewModel.tryLogin(login!!, password!!)
     }
 
     private fun onForgottenPassword() {
@@ -93,10 +93,12 @@ class LoginFragment : Fragment() {
 
     private fun goToScheduleFragment() {
         Log.d(TAG, "go to new activity")
+        if(!password.isNullOrEmpty() && !login.isNullOrEmpty()){
         val preferencesEditor = mSettings.edit()
         preferencesEditor.putString("login", login)
         preferencesEditor.putString("password", password)
         preferencesEditor.apply()
+        }
         Navigation.findNavController(requireView())
             .navigate(LoginFragmentDirections.actionLoginFragmentToScheduleFragment())
     }
